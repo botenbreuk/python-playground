@@ -1,5 +1,6 @@
 {
-  "editor.defaultFormatter": "ms-python.python",
+  "editor.defaultFormatter": "ms-python.black-formatter",
   "editor.tabSize": 2,
-
+  "editor.formatOnSave": true,
+  "python-envs.defaultEnvManager": "ms-python.python:pyenv"
 }
