@@ -1,0 +1,23 @@
+[project]
+version = '0.0.1'
+name = 'python-playground'
+description = "A simple project to quickly test python functionality."
+license = "MIT"
+license-files = [
+    "LICENSE.md",
+]
+requires-python = ">=3.14"
+
+dependencies = [
+    "pyyaml==6.0.3",
+]
+
+[project.scripts]
+start = "main:main"
+
+[tool.poetry]
+packages = [{include = "main.py"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

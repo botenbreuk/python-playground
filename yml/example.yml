@@ -1,0 +1,10 @@
+app:
+  name: example
+  version: 1.0.0
+  description: An example YAML configuration file.
+database:
+  type: postgresql
+  host: localhost
+  port: 5432
+  username: user
+  password: pass
