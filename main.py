@@ -13,6 +13,7 @@ function/class definitions (guard any script-style code behind
 from __future__ import annotations
 from pathlib import Path
 from utils.logger import log
+from functools import wraps
 
 import importlib.util
 import inspect
@@ -30,13 +31,18 @@ def example(func=None, *, disable=False, name=None):
     Usable as @example or @example(disable=True). A disabled example
     stays marked but is skipped by the scanner instead of being run.
     """
+
     def decorator(f):
-        setattr(f, _MARKER, True)
-        setattr(f, _DISABLED_MARKER, disable)
-        log.info("----------------------------------------------------")
-        log.info("- Example: {}".format(name if name is not None else f.__name__))
-        log.info("----------------------------------------------------")
-        return f
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            log.info("----------------------------------------------------")
+            log.info("- Example: {}".format(name if name is not None else f.__name__))
+            log.info("----------------------------------------------------")
+            return f(*args, **kwargs)
+
+        setattr(wrapper, _MARKER, True)
+        setattr(wrapper, _DISABLED_MARKER, disable)
+        return wrapper
 
     if func is not None:
         return decorator(func)
@@ -109,14 +115,12 @@ def main() -> None:
 
         for func in _find_runnables(module):
             if getattr(func, _DISABLED_MARKER, False):
-                log.info(f"[SKIP]  {rel_path}:{func.__name__} disabled")
                 continue
             if _takes_required_args(func):
                 log.info(
                     f"[SKIP]  {rel_path}:{func.__name__} needs arguments, can't auto-run"
                 )
                 continue
-            log.info(f"[RUN]   {rel_path}:{func.__name__}")
             try:
                 func()
             except Exception as exc:
